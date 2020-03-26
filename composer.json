@@ -1,0 +1,33 @@
+{
+    "name": "r3mfr/api-dpae-php",
+    "description": "Librairie PHP facilitant l'intégration de l'API DPAE https://dpae.r3m.fr",
+    "type": "library",
+    "require": {
+        "php": "^7.1",
+        "ext-json": "*",
+        "symfony/http-client": "^4.4",
+        "nyholm/psr7-server": "^0.4",
+        "nyholm/psr7": "^1.2",
+        "psr/http-client": "^1.0",
+        "psr/log": "^1.1"
+    },
+    "require-dev": {
+        "codeception/codeception": "^4.0",
+        "codeception/module-phpbrowser": "^1.0.0",
+        "codeception/module-asserts": "^1.0.0",
+        "donatj/mock-webserver": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "R3m\\Dpae\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rémy DANIEL",
+            "email": "contact@r3m.fr"
+        }
+    ],
+    "minimum-stability": "stable"
+}
