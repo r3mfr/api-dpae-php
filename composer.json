@@ -29,5 +29,8 @@
             "email": "contact@r3m.fr"
         }
     ],
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "scripts": {
+        "test": "vendor/bin/codecept run"
+    }
 }
