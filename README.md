@@ -2,6 +2,8 @@
 
 Cette librairie fournit un moyen simple pour utiliser l'API DPAE [dpae.r3m.fr](https://dpae.r3m.fr) pour toute application écrite dans le language PHP.
 
+[![CI](https://github.com/r3mfr/api-dpae-php/actions/workflows/ci.yml/badge.svg)](https://github.com/r3mfr/api-dpae-php/actions/workflows/ci.yml)
+
 ## Pré-requis
 
 PHP 7.1.0 et plus récent.
