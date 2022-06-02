@@ -15,6 +15,8 @@ use R3m\Dpae\ApiOperations\Retrieve;
  * @property $idExterne string Identifiant dans le système externe
  * @property $raisonSociale string Nom ou raison sociale de l'employeur. Obligatoire, 64 caractères, [A-Z0-9&- ]
  * @property $siret string N° SIRET de l'établissement employeur. Obligatoire, 14 chiffres
+ * @property $nomAbonneUrssaf string Nom de l'abonné aux services en ligne de l'URSSAF. Obligatoire, 32 caractères max., [A-Z&- .]
+ * @property $prenomAbonneUrssaf string Prénom de l'abonné aux services en ligne de l'URSSAF. Obligatoire, 32 caractères max., [A-Z&- .]
  * @property $codeUrssaf string Code de l'URSSAF réceptrice des données. Obligatoire, 3 caractères. Liste des Codes URSSAF : https://www2.due.urssaf.fr/declarant/jasperServlet
  * @property $adresse1 string Adresse de l'établissement (1ere ligne). Obligatoire, 32 caractères max., [A-Z0-9&- .,']
  * @property $adresse2 string Adresse de l'établissement (2e ligne). 32 caractères max, [A-Z0-9&- .,']
@@ -129,6 +131,42 @@ class Embauche extends ApiResource implements \JsonSerializable
     public function setSiret(string $siret): Embauche
     {
         $this->siret = $siret;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNomAbonneUrssaf(): string
+    {
+        return $this->nomAbonneUrssaf ?? '';
+    }
+
+    /**
+     * @param string $nomAbonneUrssaf
+     * @return Embauche
+     */
+    public function setNomAbonneUrssaf(string $nomAbonneUrssaf): Embauche
+    {
+        $this->nomAbonneUrssaf = $nomAbonneUrssaf;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrenomAbonneUrssaf(): string
+    {
+        return $this->prenomAbonneUrssaf ?? '';
+    }
+
+    /**
+     * @param string $prenomAbonneUrssaf
+     * @return Embauche
+     */
+    public function setPrenomAbonneUrssaf(string $prenomAbonneUrssaf): Embauche
+    {
+        $this->prenomAbonneUrssaf = $prenomAbonneUrssaf;
         return $this;
     }
 

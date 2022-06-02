@@ -57,6 +57,8 @@ $embauche
     ->setRaisonSociale('R3M EVENEMENT')
     ->setSiret('67846960300074')
     ->setCodeUrssaf('460')
+    ->setNomAbonneUrssaf('DUPUIS')
+    ->setPrenomAbonneUrssaf('MICHEL')
     ->setAdresse1('RUE DES ARTS')
     ->setAdresse2('BP 13011')
     ->setCodePostal('19000')

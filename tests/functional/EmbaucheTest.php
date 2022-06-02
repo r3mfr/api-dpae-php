@@ -23,6 +23,8 @@ class EmbaucheAppTest extends \Codeception\Test\Unit
           "idExterne": "abcd",
           "raisonSociale": "R3M EVENEMENT",
           "siret": "67846960300074",
+          "nomAbonneUrssaf": "DUPUIS",
+          "prenomAbonneUrssaf": "MICHEL",
           "codeUrssaf": "460",
           "adresse1": "RUE DES ARTS",
           "adresse2": "BP 13011",
