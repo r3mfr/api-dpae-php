@@ -187,5 +187,5 @@ Les pull request sont les bienvenues.
 Codeception est utilisé pour les tests.
 
 ```
-$ vendor/bin/codecept run
+$ composer run test
 ```
