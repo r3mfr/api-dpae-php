@@ -28,7 +28,7 @@ class ApiRequestTest extends \Codeception\Test\Unit
               "message": "This value should not be blank."
             }
           ]
-        }', [], 400
+        }', [], 422
         );
 
         self::$__mock_webserver->setResponseOfPath(

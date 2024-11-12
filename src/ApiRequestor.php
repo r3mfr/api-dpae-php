@@ -193,6 +193,7 @@ class ApiRequestor
 
         switch ($code) {
             case 400:
+            case 422:
                 $error = Exception\BadRequestException::factory($message, $code, $body, $data, $headers);
                 break;
             case 401:
