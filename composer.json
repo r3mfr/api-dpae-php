@@ -8,8 +8,7 @@
         "symfony/http-client": "^4.4 || ^5.4 || ^6.4",
         "nyholm/psr7-server": "^1.0",
         "nyholm/psr7": "^1.5",
-        "psr/http-client": "^1.0",
-        "psr/log": "^1.1"
+        "psr/http-client": "^1.0"
     },
     "require-dev": {
         "codeception/codeception": "^4.0",
