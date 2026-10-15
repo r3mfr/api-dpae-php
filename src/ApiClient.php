@@ -13,7 +13,7 @@ use Symfony\Component\HttpClient\Psr18Client;
  */
 class ApiClient
 {
-    public const VERSION = '1.2.1';
+    public const VERSION = '2.0.0';
 
     /**
      * @var string
