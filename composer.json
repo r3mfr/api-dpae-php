@@ -3,18 +3,17 @@
     "description": "Librairie PHP facilitant l'intégration de l'API DPAE https://dpae.r3m.fr",
     "type": "library",
     "require": {
-        "php": ">=7.1.0",
+        "php": ">=8.2",
         "ext-json": "*",
-        "symfony/http-client": "^4.4 || ^5.4 || ^6.4",
+        "symfony/http-client": "^7.4",
         "nyholm/psr7-server": "^1.0",
-        "nyholm/psr7": "^1.5",
+        "nyholm/psr7": "^1.8",
         "psr/http-client": "^1.0"
     },
     "require-dev": {
-        "codeception/codeception": "^4.0",
-        "codeception/module-phpbrowser": "^1.0",
-        "codeception/module-asserts": "^1.3",
-        "donatj/mock-webserver": "^2.4"
+        "codeception/codeception": "^5.3",
+        "codeception/module-asserts": "^3.3",
+        "donatj/mock-webserver": "^2.10"
     },
     "autoload": {
         "psr-4": {
