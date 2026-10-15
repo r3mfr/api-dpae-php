@@ -10,15 +10,15 @@ namespace R3m\Dpae\AuthTokenStorage;
  */
 final class Memory implements AuthTokenStorageInterface
 {
-    private static $token = '';
+    private static string $token = '';
 
     public function get(): string
     {
-        return static::$token;
+        return self::$token;
     }
 
     public function set(string $token): void
     {
-        static::$token = $token;
+        self::$token = $token;
     }
 }

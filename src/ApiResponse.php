@@ -13,20 +13,20 @@ use Psr\Http\Message\ResponseInterface;
 final class ApiResponse
 {
     /**
-     * @var ResponseInterface
+     * @var ResponseInterface|null
      */
-    public $response;
+    public ?ResponseInterface $response = null;
 
     /**
      * @var array
      */
-    public $json;
+    public array $json = [];
 
     /**
-     * @param ResponseInterface $response
+     * @param ResponseInterface|null $response
      * @param array $json
      */
-    public function __construct(?\Psr\Http\Message\ResponseInterface $response, array $json)
+    public function __construct(?ResponseInterface $response, array $json)
     {
         $this->response = $response;
         $this->json = $json;

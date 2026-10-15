@@ -9,7 +9,7 @@ namespace R3m\Dpae\ApiOperations;
  */
 trait Save
 {
-    public function save()
+    public function save(): void
     {
         $url = static::classUrl();
         $response = $this->request('POST', $url, $this);

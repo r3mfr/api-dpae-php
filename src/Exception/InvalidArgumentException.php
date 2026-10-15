@@ -6,7 +6,4 @@ namespace R3m\Dpae\Exception;
 /**
  * @package R3m\Dpae
  */
-class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
-{
-
-}
+class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface {}

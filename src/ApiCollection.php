@@ -2,11 +2,18 @@
 
 namespace R3m\Dpae;
 
+use ArrayAccess;
+use ArrayIterator;
+use BadMethodCallException;
+use Generator;
+use InvalidArgumentException;
+use IteratorAggregate;
+
 /**
  * @package R3m\Dpae
  * @internal
  */
-class ApiCollection implements \IteratorAggregate, \ArrayAccess
+class ApiCollection implements IteratorAggregate, ArrayAccess
 {
     use ApiOperations\Request {
         request as traitRequest;
@@ -15,75 +22,75 @@ class ApiCollection implements \IteratorAggregate, \ArrayAccess
     /**
      * @var array
      */
-    protected $filters = [];
+    protected array $filters = [];
 
     /**
      * @var int
      */
-    protected $currentPage = 1;
+    protected int $currentPage = 1;
 
     /**
      * @var array
      */
-    protected $data = [];
+    protected array $data = [];
 
     /**
-     * @var ApiResponse
+     * @var ApiResponse|null
      */
-    protected $lastResponse;
+    protected ?ApiResponse $lastResponse = null;
 
     /**
      * @var string
      */
-    private $apiResourceClass;
+    private string $apiResourceClass;
 
     public function __construct(string $apiResourceClass, array $filters = [], int $page = 1)
     {
         if (!class_exists($apiResourceClass) || !is_a($apiResourceClass, ApiResource::class, true)) {
-            throw new \InvalidArgumentException("$apiResourceClass doit étendre " . ApiResource::class);
+            throw new InvalidArgumentException("$apiResourceClass doit étendre " . ApiResource::class);
         }
         $this->apiResourceClass = $apiResourceClass;
         $this->currentPage = $page;
         $this->filters = $filters;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return array_key_exists($offset, $this->data);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->data[$offset] ?? null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
-        throw new \BadMethodCallException("Cette collection est en lecture seule.");
+        throw new BadMethodCallException("Cette collection est en lecture seule.");
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
-        throw new \BadMethodCallException("Cette collection est en lecture seule.");
+        throw new BadMethodCallException("Cette collection est en lecture seule.");
     }
 
     /**
      * Retourne un itérateur sur les données de la page courante
      *
-     * @return \ArrayIterator
+     * @return ArrayIterator
      */
-    public function getIterator(): \ArrayIterator
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator($this->data);
+        return new ArrayIterator($this->data);
     }
 
     /**
      * Générateur permettant de boucler sur toutes les ApiResource, page par page.
      * A chaque fin de page, la page suivante est automatiquement chargée pour continuer l'itération.
      *
-     * @return \Generator|ApiResource[]
+     * @return Generator<ApiResource>
      */
-    public function autoPagingIterator(): \Generator
+    public function autoPagingIterator(): Generator
     {
         while (true) {
             foreach ($this->data as $item) {
@@ -97,7 +104,7 @@ class ApiCollection implements \IteratorAggregate, \ArrayAccess
         }
     }
 
-    protected function nextPage()
+    protected function nextPage(): void
     {
         if ($this->isEmpty()) {
             return;
@@ -112,7 +119,7 @@ class ApiCollection implements \IteratorAggregate, \ArrayAccess
         return empty($this->data);
     }
 
-    protected function request()
+    protected function request(): void
     {
         $url = $this->apiResourceClass::classUrl();
         $query = http_build_query(array_merge($this->filters, ['page' => $this->currentPage]));
@@ -125,9 +132,10 @@ class ApiCollection implements \IteratorAggregate, \ArrayAccess
 
     /**
      * @param array $values
+     *
      * @internal
      */
-    public function refreshFrom($values)
+    public function refreshFrom(array $values): void
     {
         $this->data = [];
         foreach ($values as $v) {
@@ -138,18 +146,19 @@ class ApiCollection implements \IteratorAggregate, \ArrayAccess
     /**
      * Retourne la dernière réponse reçue de l'API
      *
-     * @return ApiResponse
+     * @return ApiResponse|null
      */
-    public function getLastResponse(): ApiResponse
+    public function getLastResponse(): ?ApiResponse
     {
         return $this->lastResponse;
     }
 
     /**
      * @param ApiResponse $response
+     *
      * @internal
      */
-    public function setLastResponse(ApiResponse $response)
+    public function setLastResponse(ApiResponse $response): void
     {
         $this->lastResponse = $response;
     }

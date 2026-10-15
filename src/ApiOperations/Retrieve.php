@@ -10,11 +10,11 @@ namespace R3m\Dpae\ApiOperations;
 trait Retrieve
 {
     /**
-     * @param array|string $id ID de l'ApiResource à charger
+     * @param string $id ID de l'ApiResource à charger
      *
      * @return static
      */
-    public static function retrieve($id)
+    public static function retrieve(string $id): static
     {
         $url = static::resourceUrl($id);
         $response = static::staticRequest('GET', $url);

@@ -15,11 +15,11 @@ trait Request
     /**
      * @param string $method HTTP method ('get', 'post', etc.)
      * @param string $url URL de la requête
-     * @param array|string|\JsonSerializable|null $data
+     * @param mixed $data
      *
      * @return ApiResponse
      */
-    protected function request(string $method, string $url, $data): ApiResponse
+    protected function request(string $method, string $url, mixed $data = null): ApiResponse
     {
         return static::staticRequest($method, $url, $data);
     }
@@ -27,11 +27,11 @@ trait Request
     /**
      * @param string $method HTTP method ('get', 'post', etc.)
      * @param string $url URL de la requête
-     * @param array|string|\JsonSerializable|null $data Données à envoyer avec la requête
+     * @param mixed $data Données à envoyer avec la requête
      *
      * @return ApiResponse
      */
-    protected static function staticRequest(string $method, string $url, $data = null): ApiResponse
+    protected static function staticRequest(string $method, string $url, mixed $data = null): ApiResponse
     {
         return (new ApiRequestor())->request($method, $url, $data);
     }

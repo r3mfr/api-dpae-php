@@ -13,17 +13,17 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 final class WebhookEvent
 {
-    const ACTION_EMBAUCHE_DECLAREE = 'embauche.declaree';
+    public const ACTION_EMBAUCHE_DECLAREE = 'embauche.declaree';
 
     /**
      * @var string
      */
-    protected $action;
+    protected string $action;
 
     /**
      * @var Embauche
      */
-    protected $embauche;
+    protected Embauche $embauche;
 
     public function __construct(string $action, Embauche $embauche)
     {
@@ -33,7 +33,7 @@ final class WebhookEvent
 
     /**
      * Reçoit un événement émis par un webhook, le valide éventuellement avec $secret,
-     * et retourne une instance de WebhooEvent, représentant l'événement reçu.
+     * et retourne une instance de WebhookEvent, représentant l'événement reçu.
      *
      * Cette méthode peut directement lire les données de la requête depuis les
      * variables globales et l'entrée php://input, ou alors vous pouvez lui passer
@@ -41,40 +41,41 @@ final class WebhookEvent
      *
      * @param string|null $secret
      * @param ServerRequestInterface|null $request
+     *
      * @return WebhookEvent
      *
      * @throws Exception\WebhookException
      * @throws Exception\WebhookSignatureException
      */
-    public static function receive(?string $secret, ServerRequestInterface $request = null): WebhookEvent
+    public static function receive(?string $secret, ?ServerRequestInterface $request = null): WebhookEvent
     {
-        $request = $request ?? static::getServerRequest();
+        $request = $request ?? self::getServerRequest();
 
         if (!$request->hasHeader('X-Dpae-Webhook-Id') || !$request->hasHeader('X-Dpae-Webhook-Action')) {
             throw new Exception\WebhookException(
-                "Requête invalide, header X-Dpae-Webhook-Id ou X-Dpae-Webhook-Action manquants."
+                "Requête invalide, header X-Dpae-Webhook-Id ou X-Dpae-Webhook-Action manquants.",
             );
         }
 
-        $payload = (string)$request->getBody();
+        $payload = (string) $request->getBody();
 
         if ($secret !== null && $secret !== '') {
             if ($request->hasHeader('X-Dpae-Signature')) {
                 $signature = $request->getHeaderLine('X-Dpae-Signature');
-                if (!static::validateSignature($payload, $signature, $secret)) {
+                if (!self::validateSignature($payload, $signature, $secret)) {
                     throw new Exception\WebhookSignatureException(
-                        "La signature de la requête est invalide. La requête a pu être corrompue, ou la clé secrète est incohérente entre celle qui est fournie et celle qui est associée au webhook."
+                        "La signature de la requête est invalide. La requête a pu être corrompue, ou la clé secrète est incohérente entre celle qui est fournie et celle qui est associée au webhook.",
                     );
                 }
             } else {
                 throw new Exception\WebhookSignatureException(
-                    "La signature de la requête doit être vérifiée avec la clé secrète, mais la requête n'a pas été signée. Vérifier dans votre guichet que la clé secrète est bien associée au webhook."
+                    "La signature de la requête doit être vérifiée avec la clé secrète, mais la requête n'a pas été signée. Vérifier dans votre guichet que la clé secrète est bien associée au webhook.",
                 );
             }
         } else {
             if ($request->hasHeader('X-Dpae-Signature')) {
                 throw new Exception\WebhookSignatureException(
-                    "Le webhook est configuré pour signer les requêtes avec une clé secrète, mais aucune clé secrète n'a été fournie. Veuillez fournir la clé secrète associée au webhook."
+                    "Le webhook est configuré pour signer les requêtes avec une clé secrète, mais aucune clé secrète n'a été fournie. Veuillez fournir la clé secrète associée au webhook.",
                 );
             }
         }
@@ -88,15 +89,10 @@ final class WebhookEvent
             throw new Exception\UnexpectedValueException($msg);
         }
 
-        switch ($action) {
-            case static::ACTION_EMBAUCHE_DECLAREE:
-                $embauche = Embauche::constructFrom($data);
-                return new static($action, $embauche);
-                break;
-            default:
-                throw new Exception\UnexpectedValueException("");
-                break;
-        }
+        return match ($action) {
+            self::ACTION_EMBAUCHE_DECLAREE => new self($action, Embauche::constructFrom($data)),
+            default => throw new Exception\UnexpectedValueException(""),
+        };
     }
 
     private static function getServerRequest(): ServerRequestInterface
@@ -106,13 +102,13 @@ final class WebhookEvent
             $psr17Factory,
             $psr17Factory,
             $psr17Factory,
-            $psr17Factory
+            $psr17Factory,
         );
 
         return $creator->fromGlobals();
     }
 
-    private static function validateSignature($payload, $signature, $secret)
+    private static function validateSignature(string $payload, string $signature, string $secret): bool
     {
         $expectedSignature = 'sha1=' . sha1($payload . $secret);
 
@@ -120,7 +116,7 @@ final class WebhookEvent
     }
 
     /**
-     * Retourne l'embauche attachée au WebhooEvent
+     * Retourne l'embauche attachée au WebhookEvent
      * @return Embauche
      */
     public function getEmbauche(): Embauche

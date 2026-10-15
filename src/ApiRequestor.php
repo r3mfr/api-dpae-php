@@ -2,13 +2,12 @@
 
 namespace R3m\Dpae;
 
+use JsonSerializable;
 use Nyholm\Psr7\Request;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use R3m\Dpae\AuthTokenStorage\AuthTokenStorageInterface;
-use R3m\Dpae\Exception;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * @package R3m\Dpae
@@ -19,17 +18,17 @@ class ApiRequestor
     /**
      * @var AuthTokenStorageInterface
      */
-    protected $authTokenStorage;
+    protected AuthTokenStorageInterface $authTokenStorage;
 
     /**
      * @var string
      */
-    protected $apiBase = '';
+    protected string $apiBase = '';
 
     /**
-     * @var HttpClientInterface
+     * @var ClientInterface
      */
-    protected $httpClient;
+    protected ClientInterface $httpClient;
 
     /**
      * @param AuthTokenStorageInterface|null $authTokenStorage
@@ -37,9 +36,9 @@ class ApiRequestor
      * @param string $apiBase
      */
     public function __construct(
-        AuthTokenStorageInterface $authTokenStorage = null,
-        ClientInterface $httpClient = null,
-        string $apiBase = ''
+        ?AuthTokenStorageInterface $authTokenStorage = null,
+        ?ClientInterface $httpClient = null,
+        string $apiBase = '',
     ) {
         $this->authTokenStorage = $authTokenStorage ?? ApiClient::getAuthTokenStorage();
         $this->httpClient = $httpClient ?? ApiClient::getHttpClient();
@@ -49,20 +48,20 @@ class ApiRequestor
     /**
      * @param string $method
      * @param string $url
-     * @param array|string|\JsonSerializable|null $data
+     * @param mixed $data
      *
      * @return ApiResponse
      *
      * @throws Exception\ApiErrorException
      * @throws Exception\AuthenticationException
      */
-    public function request($method, $url, $data): ApiResponse
+    public function request(string $method, string $url, mixed $data): ApiResponse
     {
         $authToken = $this->authTokenStorage->get();
 
         try {
             $response = $this->requestRaw($method, $url, $data, $authToken);
-        } catch (Exception\AuthenticationException $e) {
+        } catch (Exception\AuthenticationException) {
             $authToken = $this->getAuthToken();
             $this->authTokenStorage->set($authToken);
             // retente avec un token
@@ -75,14 +74,14 @@ class ApiRequestor
     /**
      * @param string $method
      * @param string $url
-     * @param array|string|\JsonSerializable|null $data
+     * @param mixed $data
      * @param string $authToken
      *
      * @return ApiResponse
      * @throws Exception\ApiConnectionException
      * @throws Exception\ApiErrorException
      */
-    protected function requestRaw(string $method, string $url, $data, string $authToken): ApiResponse
+    protected function requestRaw(string $method, string $url, mixed $data, string $authToken): ApiResponse
     {
         $absUrl = $this->apiBase . $url;
 
@@ -90,17 +89,17 @@ class ApiRequestor
         if ($data !== null) {
             if (is_string($data)) {
                 $body = $data;
-            } elseif (is_array($data) || $data instanceof \JsonSerializable) {
+            } elseif (is_array($data) || $data instanceof JsonSerializable) {
                 $body = json_encode($data);
                 $jsonError = json_last_error();
-                if ($body === null && $jsonError !== JSON_ERROR_NONE) {
+                if ($body === false || ($body === null && $jsonError !== JSON_ERROR_NONE)) {
                     $msg = "Données de la requête invalides: $data (json_last_error(): $jsonError)";
                     throw new Exception\UnexpectedValueException($msg);
                 }
             } else {
                 throw new Exception\InvalidArgumentException(
                     'Le corps de la requête doit être parmi: null, string, array, JsonSerializable. "'
-                    . gettype($data) . '" passé.'
+                    . get_debug_type($data) . '" passé.',
                 );
             }
         }
@@ -125,12 +124,12 @@ class ApiRequestor
      *
      * @return array
      */
-    protected function defaultHeaders(string $authToken = '')
+    protected function defaultHeaders(string $authToken = ''): array
     {
         $uaString = 'r3mfr/api-dpae-php/' . ApiClient::VERSION;
 
         $langVersion = phpversion();
-        $uname_disabled = in_array('php_uname', explode(',', ini_get('disable_functions')));
+        $uname_disabled = in_array('php_uname', explode(',', (string) ini_get('disable_functions')));
         $uname = $uname_disabled ? '(disabled)' : php_uname();
 
         $ua = [
@@ -146,7 +145,7 @@ class ApiRequestor
             'User-Agent' => $uaString,
         ];
 
-        if ($authToken) {
+        if ($authToken !== '') {
             $headers['Authorization'] = 'Bearer ' . $authToken;
         }
 
@@ -156,13 +155,14 @@ class ApiRequestor
     /**
      *
      * @param ResponseInterface $response
+     *
      * @return ApiResponse
      *
      * @throws Exception\ApiErrorException
      */
     protected function parseResponse(ResponseInterface $response): ApiResponse
     {
-        $payload = (string)$response->getBody();
+        $payload = (string) $response->getBody();
         $data = json_decode($payload, true);
         $jsonError = json_last_error();
         if ($data === null && $jsonError !== JSON_ERROR_NONE) {
@@ -182,47 +182,36 @@ class ApiRequestor
      * @param ResponseInterface $response
      * @param array $data
      *
+     * @return never
      * @throws Exception\ApiErrorException
      */
-    protected function handleResponseError(ResponseInterface $response, array $data)
+    protected function handleResponseError(ResponseInterface $response, array $data): never
     {
-        $code = $data['code'] ?? $response->getStatusCode();
+        $code = (int) ($data['code'] ?? $response->getStatusCode());
         $message = $data['message'] ?? $data['title'] ?? $response->getReasonPhrase();
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
         $headers = $response->getHeaders();
 
-        switch ($code) {
-            case 400:
-            case 422:
-                $error = Exception\BadRequestException::factory($message, $code, $body, $data, $headers);
-                break;
-            case 401:
-                $error = Exception\AuthenticationException::factory($message, $code, $body, $data, $headers);
-                break;
-            case 404:
-                $error = Exception\InvalidRequestException::factory($message, $code, $body, $data, $headers);
-                break;
-            default:
-                $error = Exception\UnknownApiErrorException::factory($message, $code, $body, $data, $headers);
-                break;
-        }
-
-        throw $error;
+        throw match ($code) {
+            400, 422 => Exception\BadRequestException::factory($message, $code, $body, $data, $headers),
+            401 => Exception\AuthenticationException::factory($message, $code, $body, $data, $headers),
+            404 => Exception\InvalidRequestException::factory($message, $code, $body, $data, $headers),
+            default => Exception\UnknownApiErrorException::factory($message, $code, $body, $data, $headers),
+        };
     }
 
     protected function getAuthToken(): string
     {
         $credentials = ApiClient::getCredentials();
-        if (!isset($credentials['username']) || empty($credentials['username'])
-            || !isset($credentials['password']) || empty($credentials['password'])) {
+        if (empty($credentials['username']) || empty($credentials['password'])) {
             throw new Exception\AuthenticationException(
-                'Veuillez configurer des identifiants valides avec ApiClient::setCredentials() avant toute requête.'
+                'Veuillez configurer des identifiants valides avec ApiClient::setCredentials() avant toute requête.',
             );
         }
 
         $body = [
             'username' => $credentials['username'],
-            'password' => $credentials['password']
+            'password' => $credentials['password'],
         ];
         $response = $this->requestRaw('POST', '/login_check', $body, '');
 
