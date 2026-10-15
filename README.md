@@ -6,7 +6,7 @@ Cette librairie fournit un moyen simple pour utiliser l'API DPAE [dpae.r3m.fr](h
 
 ## Pré-requis
 
-PHP 7.1.0 et plus récent.
+PHP 8.2 et plus récent.
 
 ## Installation
 
