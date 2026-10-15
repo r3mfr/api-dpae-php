@@ -2,18 +2,20 @@
 
 namespace R3m\Dpae\Exception;
 
+use Exception;
+
 /**
  * Implémente les propriétés et les méthodes commnunes à toutes les exceptions
  *
  * @package R3m\Dpae
  */
-abstract class ApiErrorException extends \Exception implements ExceptionInterface
+abstract class ApiErrorException extends Exception implements ExceptionInterface
 {
-    protected $httpBody;
-    protected $httpHeaders;
-    protected $httpStatus;
-    protected $jsonBody;
-    protected $violations;
+    protected ?string $httpBody = null;
+    protected ?array $httpHeaders = null;
+    protected ?int $httpStatus = null;
+    protected ?array $jsonBody = null;
+    protected ?array $violations = null;
 
     /**
      * Créé une nouvelle exception
@@ -28,11 +30,11 @@ abstract class ApiErrorException extends \Exception implements ExceptionInterfac
      */
     public static function factory(
         string $message,
-        int $httpStatus = null,
-        string $httpBody = null,
-        array $jsonBody = null,
-        array $httpHeaders = null
-    ) {
+        ?int $httpStatus = null,
+        ?string $httpBody = null,
+        ?array $jsonBody = null,
+        ?array $httpHeaders = null,
+    ): static {
         $instance = new static($message);
         $instance->setHttpStatus($httpStatus);
         $instance->setHttpBody($httpBody);
@@ -43,9 +45,9 @@ abstract class ApiErrorException extends \Exception implements ExceptionInterfac
         return $instance;
     }
 
-    protected function parseViolations()
+    protected function parseViolations(): ?array
     {
-        if (is_null($this->jsonBody) || !array_key_exists('violations', $this->jsonBody)) {
+        if ($this->jsonBody === null || !array_key_exists('violations', $this->jsonBody)) {
             return null;
         }
 
@@ -57,15 +59,15 @@ abstract class ApiErrorException extends \Exception implements ExceptionInterfac
      *
      * @return string|null
      */
-    public function getHttpBody()
+    public function getHttpBody(): ?string
     {
         return $this->httpBody;
     }
 
     /**
-     * @param mixed $httpBody
+     * @param string|null $httpBody
      */
-    public function setHttpBody($httpBody): void
+    public function setHttpBody(?string $httpBody): void
     {
         $this->httpBody = $httpBody;
     }
@@ -75,15 +77,15 @@ abstract class ApiErrorException extends \Exception implements ExceptionInterfac
      *
      * @return array|null
      */
-    public function getHttpHeaders()
+    public function getHttpHeaders(): ?array
     {
         return $this->httpHeaders;
     }
 
     /**
-     * @param mixed $httpHeaders
+     * @param array|null $httpHeaders
      */
-    public function setHttpHeaders($httpHeaders): void
+    public function setHttpHeaders(?array $httpHeaders): void
     {
         $this->httpHeaders = $httpHeaders;
     }
@@ -93,15 +95,15 @@ abstract class ApiErrorException extends \Exception implements ExceptionInterfac
      *
      * @return array|null
      */
-    public function getJsonBody()
+    public function getJsonBody(): ?array
     {
         return $this->jsonBody;
     }
 
     /**
-     * @param mixed $jsonBody
+     * @param array|null $jsonBody
      */
-    public function setJsonBody($jsonBody): void
+    public function setJsonBody(?array $jsonBody): void
     {
         $this->jsonBody = $jsonBody;
     }
@@ -109,15 +111,15 @@ abstract class ApiErrorException extends \Exception implements ExceptionInterfac
     /**
      * @return array|null
      */
-    public function getViolations()
+    public function getViolations(): ?array
     {
         return $this->violations;
     }
 
     /**
-     * @param mixed $violations
+     * @param array|null $violations
      */
-    public function setViolations($violations): void
+    public function setViolations(?array $violations): void
     {
         $this->violations = $violations;
     }
@@ -125,9 +127,10 @@ abstract class ApiErrorException extends \Exception implements ExceptionInterfac
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
-        $statusStr = ($this->getHttpStatus() == null) ? "" : "(Status {$this->getHttpStatus()}) ";
+        $statusStr = ($this->getHttpStatus() === null) ? "" : "(Status {$this->getHttpStatus()}) ";
+
         return "{$statusStr}{$this->getMessage()}";
     }
 
@@ -136,15 +139,15 @@ abstract class ApiErrorException extends \Exception implements ExceptionInterfac
      *
      * @return int|null
      */
-    public function getHttpStatus()
+    public function getHttpStatus(): ?int
     {
         return $this->httpStatus;
     }
 
     /**
-     * @param mixed $httpStatus
+     * @param int|null $httpStatus
      */
-    public function setHttpStatus($httpStatus): void
+    public function setHttpStatus(?int $httpStatus): void
     {
         $this->httpStatus = $httpStatus;
     }

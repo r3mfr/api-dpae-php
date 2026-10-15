@@ -3,6 +3,7 @@
 
 namespace R3m\Dpae;
 
+use JsonSerializable;
 use R3m\Dpae\ApiOperations\All;
 use R3m\Dpae\ApiOperations\One;
 use R3m\Dpae\ApiOperations\Retrieve;
@@ -41,7 +42,7 @@ use R3m\Dpae\ApiOperations\Retrieve;
  *
  * @package R3m\Dpae
  */
-class Embauche extends ApiResource implements \JsonSerializable
+class Embauche extends ApiResource implements JsonSerializable
 {
 
     use All;
@@ -51,9 +52,9 @@ class Embauche extends ApiResource implements \JsonSerializable
         save as traitSave;
     }
 
-    protected static $OBJECT_NAME = 'embauche';
+    protected static string $OBJECT_NAME = 'embauche';
 
-    public function save()
+    public function save(): void
     {
         if (array_key_exists('id', $this->values)) {
             throw new Exception\BadMethodCallException('La mise à jour d\'une embauche existante n\'est pas permise.');
@@ -72,11 +73,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param ApiResource $dpae
+     *
      * @return Embauche
      */
     public function setDpae(ApiResource $dpae): Embauche
     {
         $this->dpae = $dpae;
+
         return $this;
     }
 
@@ -90,11 +93,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $idExterne
+     *
      * @return Embauche
      */
     public function setIdExterne(string $idExterne): Embauche
     {
         $this->idExterne = $idExterne;
+
         return $this;
     }
 
@@ -108,11 +113,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $raisonSociale
+     *
      * @return Embauche
      */
     public function setRaisonSociale(string $raisonSociale): Embauche
     {
         $this->raisonSociale = $raisonSociale;
+
         return $this;
     }
 
@@ -126,11 +133,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $siret
+     *
      * @return Embauche
      */
     public function setSiret(string $siret): Embauche
     {
         $this->siret = $siret;
+
         return $this;
     }
 
@@ -144,11 +153,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $nomAbonneUrssaf
+     *
      * @return Embauche
      */
     public function setNomAbonneUrssaf(string $nomAbonneUrssaf): Embauche
     {
         $this->nomAbonneUrssaf = $nomAbonneUrssaf;
+
         return $this;
     }
 
@@ -162,11 +173,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $prenomAbonneUrssaf
+     *
      * @return Embauche
      */
     public function setPrenomAbonneUrssaf(string $prenomAbonneUrssaf): Embauche
     {
         $this->prenomAbonneUrssaf = $prenomAbonneUrssaf;
+
         return $this;
     }
 
@@ -180,11 +193,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $codeUrssaf
+     *
      * @return Embauche
      */
     public function setCodeUrssaf(string $codeUrssaf): Embauche
     {
         $this->codeUrssaf = $codeUrssaf;
+
         return $this;
     }
 
@@ -198,11 +213,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $adresse1
+     *
      * @return Embauche
      */
     public function setAdresse1(string $adresse1): Embauche
     {
         $this->adresse1 = $adresse1;
+
         return $this;
     }
 
@@ -216,11 +233,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $adresse2
+     *
      * @return Embauche
      */
     public function setAdresse2(string $adresse2): Embauche
     {
         $this->adresse2 = $adresse2;
+
         return $this;
     }
 
@@ -234,11 +253,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $codePostal
+     *
      * @return Embauche
      */
     public function setCodePostal(string $codePostal): Embauche
     {
         $this->codePostal = $codePostal;
+
         return $this;
     }
 
@@ -252,11 +273,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $ville
+     *
      * @return Embauche
      */
     public function setVille(string $ville): Embauche
     {
         $this->ville = $ville;
+
         return $this;
     }
 
@@ -270,11 +293,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $telephone
+     *
      * @return Embauche
      */
     public function setTelephone(string $telephone): Embauche
     {
         $this->telephone = $telephone;
+
         return $this;
     }
 
@@ -288,11 +313,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $codeNaf
+     *
      * @return Embauche
      */
     public function setCodeNaf(string $codeNaf): Embauche
     {
         $this->codeNaf = $codeNaf;
+
         return $this;
     }
 
@@ -306,11 +333,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $codeCentreMedecineTravail
+     *
      * @return Embauche
      */
     public function setCodeCentreMedecineTravail(string $codeCentreMedecineTravail): Embauche
     {
         $this->codeCentreMedecineTravail = $codeCentreMedecineTravail;
+
         return $this;
     }
 
@@ -324,11 +353,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $salarieNom
+     *
      * @return Embauche
      */
     public function setSalarieNom(string $salarieNom): Embauche
     {
         $this->salarieNom = $salarieNom;
+
         return $this;
     }
 
@@ -342,11 +373,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $salarieNomEpoux
+     *
      * @return Embauche
      */
     public function setSalarieNomEpoux(string $salarieNomEpoux): Embauche
     {
         $this->salarieNomEpoux = $salarieNomEpoux;
+
         return $this;
     }
 
@@ -360,11 +393,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $salariePrenom
+     *
      * @return Embauche
      */
     public function setSalariePrenom(string $salariePrenom): Embauche
     {
         $this->salariePrenom = $salariePrenom;
+
         return $this;
     }
 
@@ -378,11 +413,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $salarieNumeroSecu
+     *
      * @return Embauche
      */
     public function setSalarieNumeroSecu(string $salarieNumeroSecu): Embauche
     {
         $this->salarieNumeroSecu = $salarieNumeroSecu;
+
         return $this;
     }
 
@@ -396,11 +433,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $salarieSexe
+     *
      * @return Embauche
      */
     public function setSalarieSexe(string $salarieSexe): Embauche
     {
         $this->salarieSexe = $salarieSexe;
+
         return $this;
     }
 
@@ -414,11 +453,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $salarieDateNaissance
+     *
      * @return Embauche
      */
     public function setSalarieDateNaissance(string $salarieDateNaissance): Embauche
     {
         $this->salarieDateNaissance = $salarieDateNaissance;
+
         return $this;
     }
 
@@ -432,11 +473,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $salarieLieuNaissance
+     *
      * @return Embauche
      */
     public function setSalarieLieuNaissance(string $salarieLieuNaissance): Embauche
     {
         $this->salarieLieuNaissance = $salarieLieuNaissance;
+
         return $this;
     }
 
@@ -450,11 +493,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $salarieDepartementNaissance
+     *
      * @return Embauche
      */
     public function setSalarieDepartementNaissance(string $salarieDepartementNaissance): Embauche
     {
         $this->salarieDepartementNaissance = $salarieDepartementNaissance;
+
         return $this;
     }
 
@@ -468,11 +513,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $dateEmbauche
+     *
      * @return Embauche
      */
     public function setDateEmbauche(string $dateEmbauche): Embauche
     {
         $this->dateEmbauche = $dateEmbauche;
+
         return $this;
     }
 
@@ -486,11 +533,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $heureEmbauche
+     *
      * @return Embauche
      */
     public function setHeureEmbauche(string $heureEmbauche): Embauche
     {
         $this->heureEmbauche = $heureEmbauche;
+
         return $this;
     }
 
@@ -504,11 +553,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $typeContrat
+     *
      * @return Embauche
      */
     public function setTypeContrat(string $typeContrat): Embauche
     {
         $this->typeContrat = $typeContrat;
+
         return $this;
     }
 
@@ -522,11 +573,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $dateFinCDD
+     *
      * @return Embauche
      */
     public function setDateFinCDD(string $dateFinCDD): Embauche
     {
         $this->dateFinCDD = $dateFinCDD;
+
         return $this;
     }
 
@@ -540,11 +593,13 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * @param string $dureePeriodeEssai
+     *
      * @return Embauche
      */
     public function setDureePeriodeEssai(string $dureePeriodeEssai): Embauche
     {
         $this->dureePeriodeEssai = $dureePeriodeEssai;
+
         return $this;
     }
 
@@ -564,7 +619,7 @@ class Embauche extends ApiResource implements \JsonSerializable
 
     /**
      * Retourne TRUE si l'URSSAF a retourné un code erreur lors de la DPAE.
-     * Le détail de l'erreur est visible dans `$this->>getDpae()->codeRetourArLibelle`.
+     * Le détail de l'erreur est visible dans `$this->getDpae()->codeRetourArLibelle`.
      * Il faudra corriger l'erreur et renvoyer une nouvelle DPAE.
      *
      * @return bool
@@ -573,7 +628,7 @@ class Embauche extends ApiResource implements \JsonSerializable
     {
         $codeRetourAr = $this->getDpae()->codeRetourAr ?? '';
 
-        return $codeRetourAr && !$this->isDeclaree();
+        return $codeRetourAr !== '' && !$this->isDeclaree();
     }
 
     /**
@@ -588,7 +643,7 @@ class Embauche extends ApiResource implements \JsonSerializable
      * @inheritDoc
      * @internal
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->values;
     }

@@ -3,7 +3,6 @@
 namespace R3m\Dpae\ApiOperations;
 
 use R3m\Dpae\ApiCollection;
-use R3m\Dpae\ApiResource;
 
 /**
  * @package R3m\Dpae

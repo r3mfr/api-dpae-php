@@ -3,39 +3,42 @@
 
 namespace R3m\Dpae;
 
+use ArrayAccess;
+use DateTime;
+
 /**
  * @package R3m\Dpae
  * @internal
  */
-abstract class ApiResource implements \ArrayAccess
+abstract class ApiResource implements ArrayAccess
 {
     use ApiOperations\Request;
 
-    protected static $OBJECT_NAME = '';
+    protected static string $OBJECT_NAME = '';
 
     /**
      * @var array
      */
-    protected $values = [];
+    protected array $values = [];
 
     /**
-     * @var ApiResponse
+     * @var ApiResponse|null
      */
-    protected $lastResponse = null;
+    protected ?ApiResponse $lastResponse = null;
 
-    public function __construct(string $id = null)
+    public function __construct(?string $id = null)
     {
         if ($id !== null) {
             $this->values['id'] = $id;
         }
     }
 
-    public function __get($k)
+    public function __get(string $k): mixed
     {
         return $this->values[$k] ?? null;
     }
 
-    public function __set($k, $v)
+    public function __set(string $k, mixed $v): void
     {
         if (array_key_exists('id', $this->values)) {
             throw new Exception\BadMethodCallException('La mise à jour de cette ressource n\'est pas permise.');
@@ -51,11 +54,13 @@ abstract class ApiResource implements \ArrayAccess
         if (!array_key_exists('id', $this->values)) {
             throw new Exception\UnexpectedValueException('Instance invalide ou non chargée.');
         }
+
         return static::resourceUrl($this->values['id']);
     }
 
     /**
      * @param string $id
+     *
      * @return string L'url API pour l'instance $id
      */
     public static function resourceUrl(string $id): string
@@ -72,47 +77,49 @@ abstract class ApiResource implements \ArrayAccess
     public static function classUrl(): string
     {
         $base = static::$OBJECT_NAME;
-        return "/${base}s";
+
+        return "/{$base}s";
     }
 
-    public function offsetSet($k, $v)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if (array_key_exists('id', $this->values)) {
             throw new Exception\BadMethodCallException('Cette ressource est en lecture seule');
         }
-        $this->values[$k] = $v;
+        $this->values[$offset] = $value;
     }
 
-    public function offsetExists($k)
+    public function offsetExists(mixed $offset): bool
     {
-        return array_key_exists($this->values, $k);
+        return array_key_exists($offset, $this->values);
     }
 
-    public function offsetUnset($k)
+    public function offsetUnset(mixed $offset): void
     {
         if (array_key_exists('id', $this->values)) {
             throw new Exception\BadMethodCallException('Cette ressource est en lecture seule');
         }
-        unset($this->values[$k]);
+        unset($this->values[$offset]);
     }
 
-    public function offsetGet($k)
+    public function offsetGet(mixed $offset): mixed
     {
-        return $this->values[$k] ?? null;
+        return $this->values[$offset] ?? null;
     }
 
     /**
      * @param array $values
+     *
      * @internal
      */
-    public function refreshFrom(array $values)
+    public function refreshFrom(array $values): void
     {
         foreach ($values as $k => $v) {
             $this->values[$k] = $this->convertValue($v);
         }
     }
 
-    protected function convertValue($value)
+    protected function convertValue(mixed $value): mixed
     {
         if (is_array($value)) {
             if (array_key_exists('id', $value)) {
@@ -122,11 +129,12 @@ abstract class ApiResource implements \ArrayAccess
             foreach ($value as $k => $v) {
                 $a[$k] = $this->convertValue($v);
             }
+
             return $a;
         }
 
-        if (preg_match('#\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{2}:\d{2}#', $value)) {
-            return \DateTime::createFromFormat(DATE_W3C, $value);
+        if (is_string($value) && preg_match('#\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{2}:\d{2}#', $value)) {
+            return DateTime::createFromFormat(DATE_W3C, $value);
         }
 
         return $value;
@@ -134,10 +142,11 @@ abstract class ApiResource implements \ArrayAccess
 
     /**
      * @param array $values
+     *
      * @return static
      * @internal
      */
-    public static function constructFrom(array $values)
+    public static function constructFrom(array $values): static
     {
         $obj = new static($values['id'] ?? null);
         $obj->refreshFrom($values);
@@ -148,18 +157,19 @@ abstract class ApiResource implements \ArrayAccess
     /**
      * Retourne la dernière réponse de l'API
      *
-     * @return ApiResponse
+     * @return ApiResponse|null
      */
-    public function getLastResponse(): ApiResponse
+    public function getLastResponse(): ?ApiResponse
     {
         return $this->lastResponse;
     }
 
     /**
      * @param ApiResponse $response
+     *
      * @internal
      */
-    public function setLastResponse(ApiResponse $response)
+    public function setLastResponse(ApiResponse $response): void
     {
         $this->lastResponse = $response;
     }

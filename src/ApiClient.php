@@ -13,32 +13,32 @@ use Symfony\Component\HttpClient\Psr18Client;
  */
 class ApiClient
 {
-    const VERSION = '1.2.1';
+    public const VERSION = '1.2.1';
 
     /**
      * @var string
      */
-    protected static $apiBase = 'https://dpae.r3m.fr/api';
+    protected static string $apiBase = 'https://dpae.r3m.fr/api';
 
     /**
      * @var array
      */
-    protected static $credentials = [];
+    protected static array $credentials = [];
 
     /**
-     * @var AuthTokenStorageInterface
+     * @var AuthTokenStorageInterface|null
      */
-    protected static $authTokenStorage;
+    protected static ?AuthTokenStorageInterface $authTokenStorage = null;
 
     /**
      * @var string
      */
-    protected static $token = '';
+    protected static string $token = '';
 
     /**
-     * @var ClientInterface
+     * @var ClientInterface|null
      */
-    protected static $httpClient;
+    protected static ?ClientInterface $httpClient = null;
 
     /**
      * @return array
